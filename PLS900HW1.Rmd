@@ -22,6 +22,21 @@ values <- c(3,4,12,19,23,48,50,61,63,78)
 ```
 
 
+We create a loop that (1) cycles through the values of "values" and sets the variable noPrime to FALSE; (2) cycles through "primes" and replaces noPrime with TRUE if the value in "primes" is equal to the value in "values"; and finally (3) prints the value in "values" if noPrime is FALSE. This leaves with only the values printed which appear in "values" that are not in "primes."
+
+```{r}
+for(v in values){
+    noPrime <- F
+  for (p in primes) {
+    if(v == p){
+      noPrime <- T
+    }
+  }
+    if (noPrime == F){
+      print(v)
+    }
+}
+```
 
 
 
