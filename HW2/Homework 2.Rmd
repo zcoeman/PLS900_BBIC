@@ -1,0 +1,21 @@
+---
+title: "Homework 2"
+author: 'BBIC: Bovee, Bichay, Iseneker, Coeman'
+date: "2/2/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Load in the polity_vectors.rda file.
+
+**Note: you will need to have your working directory set in order for this to load**
+
+```{r}
+  load("polity_vectors.rda")
+```
+
+
+
