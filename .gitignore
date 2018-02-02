@@ -3,3 +3,4 @@
 .gitattributes
 .Rproj
 .DS_Store
+.gitignore
