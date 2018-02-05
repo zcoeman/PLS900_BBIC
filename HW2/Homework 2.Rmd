@@ -26,10 +26,6 @@ democ_factor_2016[which(democ_2016 %in% 4:6)] <- 'Middle democracy'
 democ_factor_2016[which(democ_2016 %in% 7:10)] <- 'High democracy'
 
 
-table(democ_2016, democ_factor_2016, useNA="always")
-
-# but still need to be put in order
-
 democ_factor_2016 <- factor(democ_factor_2016,levels=c("Not a democracy", 
                                                         "Weak democracy", 
                                                         "Middle democracy", 
