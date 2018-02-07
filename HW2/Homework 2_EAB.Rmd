@@ -1,0 +1,57 @@
+---
+title: "Homework 2"
+author: 'BBIC: Bovee, Bichay, Iseneker, Coeman'
+date: "2/2/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Load in the polity_vectors.rda file.
+
+**Note: you will need to have your working directory set in order for this to load**
+
+```{r}
+  load("polity_vectors.rda")
+```
+
+Here, we create a new variable from democ_2016. Then, we show the attributes of the original, uncollapsed variable.
+
+```{r}
+democ_factor_2016 <- democ_2016
+attributes(democ_factor_2016)
+```
+
+
+Here, we classify democ_factor_2016 into four different types of democracy.
+
+```{r}
+democ_factor_2016[which(democ_2016 ==0)] <- 'Not a democracy'
+democ_factor_2016[which(democ_2016 %in% 1:3)] <- 'Weak democracy'
+democ_factor_2016[which(democ_2016 %in% 4:6)] <- 'Middle democracy'
+democ_factor_2016[which(democ_2016 %in% 7:10)] <- 'High democracy'
+```
+
+
+We use the factor function and assign four ordered levels to democ_factor_2016 here, going from least democratic (not a democracy) to most democratic (high democracy)
+
+
+```{r}
+democ_factor_2016 <- factor(democ_factor_2016,levels=c("Not a democracy", 
+                                                        "Weak democracy", 
+                                                        "Middle democracy", 
+                                                        "High democracy"))
+```
+
+We collapse 'weak democracy' and 'middle democracy' to be one level: ambiguous.  We show the attributes of the new, collapsed variable.
+
+
+```{r}
+levels(democ_factor_2016)[levels(democ_factor_2016) %in% c("Weak democracy", "Middle democracy")] <- "ambiguous"
+
+
+attributes(democ_factor_2016)
+```
+
