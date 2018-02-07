@@ -1,6 +1,4 @@
 .RHistory
-.git
-.gitattributes
 .Rproj
 .DS_Store
 .gitignore
