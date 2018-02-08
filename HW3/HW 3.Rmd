@@ -1,0 +1,54 @@
+---
+title: "Homework 3"
+author: 'BBIC: Bovee, Bichay, Iseneker, Coeman'
+date: "2/8/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Problem 1
+OLS function
+
+
+
+
+
+
+
+
+## Problem 2
+"Create this" matrix
+
+
+
+
+
+## Problem 3
+polity matrix and summary stats
+
+
+
+
+
+
+
+
+## Problem 4
+merging the other variables
+
+
+
+
+
+
+## Problem 5
+
+the Hadley problems
+
+
+
+
+
