@@ -118,6 +118,78 @@ clever_df
 # Problem 5
 ### Hadley problems
 
+Data structures:
+  Vectors:
+1. What are the six types of atomic vector?   
+logical, integer, double, character, complex and raw
+How does a list differ from an atomic vector?
+lists can include any element type, including other lists
+  
+2. What makes is.vector() and is.numeric() fundamentally different to is.list() and is.character()?
+is.vector and is.numeric do not test for a specific type of element 
+
+3. Test your knowledge of vector coercion rules by predicting the output of the following uses of c():
+c(1, FALSE) <- double
+c("a", 1) <- character
+c(list(1), "a") <- list
+c(TRUE, 1L) <- integer
+
+4. Why do you need to use unlist() to convert a list to an atomic vector? Why doesn’t as.vector() work?
+Lists are vectors, but not atomic vectors, so as.vector doesn't do anything as it is coercing a vector to a vector.  
+
+5. Why is 1 == "1" true? Why is -1 < FALSE true? Why is "one" < 2 false?
+1 == "1": the numeric is coerced into a character - moving up from a less flexible element to more
+-1 < F: FALSE is coerced into an integer, become 0, making the statement -1 < 0
+"one" < 2: the numeric is coerced into a character and "one" < "2" is then FALSE
+
+6. Why is the default missing value, NA, a logical vector? What’s special about logical vectors? (Hint: think about c(FALSE, NA_character_).)
+Logical is the least flexible type, so NA are logical so they don't lose any information when coerced. 
+
+  Attributes:
+1. An early draft used this code to illustrate structure():
+structure(1:5, comment = "my attribute")
+## [1] 1 2 3 4 5
+But when you print that object you don’t see the comment attribute. Why? Is the attribute missing, or is there something else special about it? (Hint: try using help.) 
+the "comment" attribute is a special kind that does not print, unlike the others
+
+2. What happens to a factor when you modify its levels?
+f1 <- factor(letters)
+levels(f1) <- rev(levels(f1))
+It reversed both the levels and the factor
+
+3. What does this code do? How do f2 and f3 differ from f1?
+f2 reverses the factor, but not the levels
+f3 reverses the levels, but not the factor
+
+  Matrices and Arrays
+1. What does dim() return when applied to a vector?
+NULL
+
+2. If is.matrix(x) is TRUE, what will is.array(x) return?
+TRUE, an array is a matrix
+
+3. How would you describe the following three objects? What makes them different to 1:5?
+x1 <- array(1:5, c(1, 1, 5)) a 1x1x5 array
+x2 <- array(1:5, c(1, 5, 1)) a 1x5x1 array
+x3 <- array(1:5, c(5, 1, 1)) a 5x1x1 array
+They differ from 1:5 in that they have dimensions (3)
+
+  Data Frames:
+1. What attributes does a data frame possess?
+names, row.names, class
+
+2. What does as.matrix() do when applied to a data frame with columns of different types?
+Coerces everything into the same type. 
+
+3. Can you have a data frame with 0 rows? What about 0 columns?
+Yes, an empty data frame
+
+
+
+
+
+
+
 
 
 
