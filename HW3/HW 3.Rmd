@@ -121,9 +121,6 @@ max <- c(max(polity$democ, na.rm=TRUE), max(polity$autoc, na.rm=TRUE),
 min <- c(min(polity$democ, na.rm=TRUE), min(polity$autoc, na.rm=TRUE),
              min(polity$polity2, na.rm=TRUE), min(polity$xconst, na.rm=TRUE))
 
-min <- c(min(polity$democ, na.rm=TRUE), min(polity$autoc, na.rm=TRUE),
-             min(polity$polity2, na.rm=TRUE), min(polity$xconst, na.rm=TRUE))
-
 n <- c(NROW(na.omit(polity$democ)), NROW(na.omit(polity$autoc)),
              NROW(na.omit(polity$polity2)), NROW(na.omit(polity$xconst)))
 
@@ -131,7 +128,7 @@ nNA <- c(sum(is.na(polity$democ)), sum(is.na(polity$autoc)),
              sum(is.na(polity$polity2)), sum(is.na(polity$xconst)))
 ```
 
-Next, we create a matrix from the 8 vectors
+Next, we create a matrix from the 7 vectors
 
 ```{r}
 summary  <- matrix(c(n, nNA, mean, median, max, min, stdev), nrow=4, ncol=7,
