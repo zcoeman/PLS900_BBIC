@@ -140,7 +140,7 @@ summary  <- matrix(c(n, nNA, mean, median, max, min, stdev), nrow=4, ncol=7,
                 )
 ```
 
-And finally, we round the matrix to teo decimal places, and transpose it so it matched the matrix in the slide
+And finally, we round the matrix to two decimal places, and transpose it so it matches the matrix in the slide
 
 ```{r}
 summary <- round(t(summary), 2)
