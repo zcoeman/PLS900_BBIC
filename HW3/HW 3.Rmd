@@ -12,7 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 # Problem 1
-### OLS function
+## OLS function
 
 First we simulate data for our LM 
 
@@ -80,7 +80,7 @@ my_lm(data[,"y"], data[,"x"])
 
 
 # Problem 2
-### "Create this" matrix, from slide 37
+## "Create this" matrix, from slide 37
 
 Use the rep function to fill the data in the data frame. 
 
@@ -98,7 +98,7 @@ clever_df
 
 
 # Problem 3
-### Polity matrix and summary stats
+## Polity matrix and summary stats
 
 
 
@@ -108,7 +108,7 @@ clever_df
 
 
 # Problem 4
-### Merging the other variables
+## Merging the other variables
 
 
 
@@ -116,10 +116,10 @@ clever_df
 
 
 # Problem 5
-### Hadley problems
+## Hadley problems
 
-Data structures:
-  Vectors:
+###Data structures:
+  ####Vectors:
 1. What are the six types of atomic vector?   
 logical, integer, double, character, complex and raw
 How does a list differ from an atomic vector?
@@ -145,10 +145,10 @@ Lists are vectors, but not atomic vectors, so as.vector doesn't do anything as i
 6. Why is the default missing value, NA, a logical vector? What’s special about logical vectors? (Hint: think about c(FALSE, NA_character_).)
 Logical is the least flexible type, so NA are logical so they don't lose any information when coerced. 
 
-  Attributes:
+  ####Attributes:
 1. An early draft used this code to illustrate structure():
 structure(1:5, comment = "my attribute")
-## [1] 1 2 3 4 5
+[1] 1 2 3 4 5
 But when you print that object you don’t see the comment attribute. Why? Is the attribute missing, or is there something else special about it? (Hint: try using help.) 
 the "comment" attribute is a special kind that does not print, unlike the others
 
@@ -161,7 +161,7 @@ It reversed both the levels and the factor
 f2 reverses the factor, but not the levels
 f3 reverses the levels, but not the factor
 
-  Matrices and Arrays
+  ####Matrices and Arrays
 1. What does dim() return when applied to a vector?
 NULL
 
@@ -174,7 +174,7 @@ x2 <- array(1:5, c(1, 5, 1)) a 1x5x1 array
 x3 <- array(1:5, c(5, 1, 1)) a 5x1x1 array
 They differ from 1:5 in that they have dimensions (3)
 
-  Data Frames:
+  ####Data Frames:
 1. What attributes does a data frame possess?
 names, row.names, class
 
@@ -184,8 +184,8 @@ Coerces everything into the same type.
 3. Can you have a data frame with 0 rows? What about 0 columns?
 Yes, an empty data frame
 
-Subsetting:
-  Data Types:
+###Subsetting:
+  ####Data Types:
 
 1. Fix each of the following common data frame subsetting errors:
 mtcars[mtcars$cyl = 4, ] -> mtcars[mtcars$cyl == 4, ]
@@ -214,13 +214,13 @@ my_diag <- function(x){
 6. What does df[is.na(df)] <- 0 do? How does it work?
 subsets a dataframe to the values that are NA and turns NAs into 0s.
 
-  Subsetting Operators
+  ####Subsetting Operators
 
 1. Given a linear model, e.g., mod <- lm(mpg ~ wt, data = mtcars), extract the residual degrees of freedom. Extract the R squared from the model summary (summary(mod))
 mod$df.residual
 summary(mod)$r.squared
 
-  Applications
+  ####Applications
 
 1.How would you randomly permute the columns of a data frame? (This is an important technique in random forests.) Can you simultaneously permute the rows and columns in one step?
 df[,sample(ncol(df))]
