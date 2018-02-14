@@ -100,8 +100,53 @@ clever_df
 # Problem 3
 ## Polity matrix and summary stats
 
+We first load the data, and then store the various statistics in resepctive vectors
+
+```{r}
+load("/Users/nickbichay/Desktop/ /aPLS 900/Week 4/polity_dataframe.rda")
 
 
+mean <- c(mean(polity$democ, na.rm=TRUE), mean(polity$autoc, na.rm=TRUE),
+             mean(polity$polity2, na.rm=TRUE), mean(polity$xconst, na.rm=TRUE))
+
+median <- c(median(polity$democ, na.rm=TRUE), median(polity$autoc, na.rm=TRUE),
+             median(polity$polity2, na.rm=TRUE), median(polity$xconst, na.rm=TRUE))
+
+stdev <- c(sd(polity$democ, na.rm=TRUE), sd(polity$autoc, na.rm=TRUE),
+             sd(polity$polity2, na.rm=TRUE), sd(polity$xconst, na.rm=TRUE))
+
+max <- c(max(polity$democ, na.rm=TRUE), max(polity$autoc, na.rm=TRUE),
+             max(polity$polity2, na.rm=TRUE), max(polity$xconst, na.rm=TRUE))
+
+min <- c(min(polity$democ, na.rm=TRUE), min(polity$autoc, na.rm=TRUE),
+             min(polity$polity2, na.rm=TRUE), min(polity$xconst, na.rm=TRUE))
+
+min <- c(min(polity$democ, na.rm=TRUE), min(polity$autoc, na.rm=TRUE),
+             min(polity$polity2, na.rm=TRUE), min(polity$xconst, na.rm=TRUE))
+
+n <- c(NROW(na.omit(polity$democ)), NROW(na.omit(polity$autoc)),
+             NROW(na.omit(polity$polity2)), NROW(na.omit(polity$xconst)))
+
+nNA <- c(sum(is.na(polity$democ)), sum(is.na(polity$autoc)),
+             sum(is.na(polity$polity2)), sum(is.na(polity$xconst)))
+```
+
+Next, we create a matrix from the 8 vectors
+
+```{r}
+summary  <- matrix(c(n, nNA, mean, median, max, min, stdev), nrow=4, ncol=7,
+                    dimnames=list(names(polity[5:8]),
+                            c("N", "nNA", "Mean", "Median", "Max", "Min", "StDev"))
+                )
+```
+
+And finally, we round the matrix to teo decimal places, and transpose it so it matched the matrix in the slide
+
+```{r}
+summary <- round(t(summary), 2)
+
+summary
+```
 
 
 
