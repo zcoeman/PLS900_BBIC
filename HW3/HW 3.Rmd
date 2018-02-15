@@ -152,7 +152,77 @@ summary
 # Problem 4
 ## Merging the other variables
 
+We first load in the two datasets
 
+```{r}
+worldBank <- read.csv( file='/Users/nickbichay/Desktop/ /aPLS 900/Week 4/worldBank.csv', stringsAsFactors=FALSE
+)
+
+load("/Users/nickbichay/Desktop/ /aPLS 900/Week 4/polity_dataframe.rda")
+
+
+
+colnames(worldBank)[4:7] = c( 'gdpGrowth', 'gdppcConstant', 'popGrowth', 'tradeOpen'
+)
+```
+
+Next, we use the package countrycode to make a matchable country name variable, and then account for the time-series nature of the data by creating a country-year indicator
+
+```{r}
+library(countrycode)
+polity$cname <- countrycode(
+    sourcevar=polity$country,
+    origin='country.name', destination='country.name')
+worldBank$cname <- countrycode(
+    worldBank$country,
+    'country.name', 'country.name')
+
+head(unique(polity[,c('country','cname')]))
+
+
+polity$cyear <- paste(
+    polity$cname, polity$year,
+    sep='_'
+    )
+worldBank$cyear <- paste(
+    worldBank$cname, worldBank$year,
+    sep='_'
+    )
+```
+
+This matches the GDP growth variable, as we did in class
+
+```{r}
+polity$gdpGrowth <- worldBank$gdpGrowth[
+    match(
+        polity$cyear, worldBank$cyear 
+        )
+]
+
+matched <- head(match(polity$cyear, worldBank$cyear))
+
+polity$cyear[1:6]
+worldBank[matched,'cyear']
+```
+
+And finally, we use a loop to match the remaining variables
+
+```{r}
+worldBank <- worldBank[!is.na(worldBank$cname),]    # remove NAs (from addtional regions that were in worldBank dataset, but not polity)
+
+to_match <- list("gdppcConstant", "popGrowth", "tradeOpen")
+
+for(i in to_match){
+
+    polity[,i] <- worldBank[,i] [
+    match(
+        polity$cyear, worldBank$cyear 
+        )
+]
+}
+
+head(polity)
+```
 
 
 
