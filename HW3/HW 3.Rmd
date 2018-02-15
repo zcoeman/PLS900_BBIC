@@ -103,8 +103,8 @@ clever_df
 We first load the data, and then store the various statistics in resepctive vectors
 
 ```{r}
-load("/Users/nickbichay/Desktop/ /aPLS 900/Week 4/polity_dataframe.rda")
 
+load("/Users/zacharycoeman/Desktop/900/polity_dataframe.rda")
 
 mean <- c(mean(polity$democ, na.rm=TRUE), mean(polity$autoc, na.rm=TRUE),
              mean(polity$polity2, na.rm=TRUE), mean(polity$xconst, na.rm=TRUE))
@@ -148,17 +148,16 @@ summary
 
 
 
-
 # Problem 4
 ## Merging the other variables
 
 We first load in the two datasets
 
 ```{r}
-worldBank <- read.csv( file='/Users/nickbichay/Desktop/ /aPLS 900/Week 4/worldBank.csv', stringsAsFactors=FALSE
+worldBank <- read.csv( file='/Users/zacharycoeman/Desktop/900/worldBank.csv', stringsAsFactors=FALSE
 )
 
-load("/Users/nickbichay/Desktop/ /aPLS 900/Week 4/polity_dataframe.rda")
+load("/Users/zacharycoeman/Desktop/900/polity_dataframe.rda")
 
 
 
