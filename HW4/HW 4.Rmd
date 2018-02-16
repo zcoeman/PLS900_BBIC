@@ -1,0 +1,35 @@
+---
+title: "HW4"
+author: 'BBC: Bichay, Bovee, Coeman'
+date: "2/16/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Homework 4
+
+# Slide 47
+
+```{r}
+
+```
+
+# Slide 50
+
+
+
+```{r}
+
+```
+
+
+# Functions chapter Problems
+
+
+
+# Functional Programming chapter Problems
+
+
