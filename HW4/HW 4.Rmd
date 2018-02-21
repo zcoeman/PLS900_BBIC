@@ -20,6 +20,40 @@ calculating the summary statistics into functions.
 
 ```{r}
 
+#Setting a dataframe up
+set.seed(6886)
+df <- data.frame(
+replicate(
+6,
+sample(c(1:10, -99, -88, -77, -66, NA), 12, rep=TRUE)
+))
+df
+
+#Testing apply
+
+#Testing lapply
+
+lapplyTest <- function(df){
+df[] <- lapply(df, fix_missing)
+return(df) }
+
+#Testing sapply
+
+#Testing For loop
+
+loopTest <- function(df){
+for(i in 1:ncol(df)){
+df[,i] <- fix_missing(df[,i]) } }
+
+#Benchmark to compare them
+
+library(rbenchmark)
+benchmark(
+lapplyTest(df),
+loopTest(df),
+replications=5,
+columns=c('test','elapsed','replications')
+)
 ```
 
 # Slide 50
@@ -50,33 +84,59 @@ library(dplyr)
 
 
 ## Functions chapter Problems
+
+```{r}
+install.packages("pryr")
+```
+
 # Function Components
 1.What function allows you to tell if an object is a function?
 What function allows you to tell if a function is a primitive function?
+  is.function tests whether an object is a function.
+  is.primitive tests wheter the function is primitive.
 
 2.  This code makes a list of all functions in the base package.
-
+```{r}
 objs <- mget(ls("package:base"), inherits = TRUE)
 funs <- Filter(is.function, objs)
+
+#first, create a list of the argument lengths
+args <- lapply
+
+#find the maximum (for question 2a)
+  
+#find the # of functions with no arguments (for question 2b)
+  
+#find the primitive functions (for question 2c)
+
+```
 Use it to answer the following questions:
 
 2a. Which base function has the most arguments?
-
+  
 2b. How many base functions have no arguments? What’s special about those functions?
 
 2c. How could you adapt the code to find all primitive functions?
 
 3. What are the three important components of a function?
-
+  Body (code inside the function), Formals (list of arguments which controls how to call the function), Environment (map of location of variables in function)
+  
 4. When does printing a function not show what environment it was created in?
-
+  When the function was created in the global environment.
+  
 # Lexical Scoping
 
 1. What does the following code return? Why? What does each of the three c’s mean?
 
+```{r}
 c <- 10
 c(c = c)
-
+```
+   The code returns 10
+   first c: 
+   second c:
+   third c:
+   
 2. What are the four principles that govern how R looks for values?
 
 3. What does the following function return? Make a prediction before running the code yourself.
@@ -95,16 +155,22 @@ f(10)
 # Function Arguments
 1. Clarify the following list of odd function calls:
 
+```{r}
 x <- sample(replace = TRUE, 20, x = c(1:10, NA))
 y <- runif(min = 0, max = 1, 20)
 cor(m = "k", y = y, u = "p", x = x)
+```
 
 2. What does this function return? Why? Which principle does it illustrate?
-
+  This function returns 3.
+  The reason that it returns 3 is ...
+  The principle which it illustrates is...
+```{r}
 f1 <- function(x = {y <- 1; 2}, y = 0) {
   x + y
 }
 f1()
+```
 
 3. What does this function return? Why? Which principle does it illustrate?
 
