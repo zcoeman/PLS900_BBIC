@@ -101,23 +101,71 @@ objs <- mget(ls("package:base"), inherits = TRUE)
 funs <- Filter(is.function, objs)
 
 #first, create a list of the argument lengths
-args <- lapply
+
+#creating an empty vector
+fun_len_vector <- c()
+
+#writing a for loop that will fill in my empty vector
+  #the "formals" gives the actual arguments in a function
+  #creating a for loop to loop through a vector of the names of the functions and get their formals
+  #checking the length of the formals 
+  #assign names to the vector: pipe the function name to the i'th element of the names vector
+for (i in 1:length(funs)){
+ fun_name <- names(funs)[i]
+ len <- length(formals(fun_name)) 
+ fun_len_vector[i] <-len
+ names(fun_len_vector)[i]<- fun_name
+}
+
+#check the length of the newly populated list
+length(fun_len_vector)
+
+
+#### Same output as for loop above, alternate specification. It just gives it as a list instead without labels
+#sapply version of the for loop
+  #take the name and return the length
+length_fun <- function(i){
+  .len <- length(formals(i))
+  return(.len)
+}
+  #pass sapply the NAMES, return the length of the formals as a vector
+test<- sapply(names(funs), length_fun)
+is.vector(test)
 
 #find the maximum (for question 2a)
-  
+  #maximum value of arguments in the function length vector
+max_fun_leng <- max(fun_len_vector) 
+
+  #which of the elements in this vector has a length of 22?
+
+which_is_longest <- which(fun_len_vector == max_fun_leng)
+  #find the name of the function in the indicated position from the which above
+
+names(fun_len_vector)[which_is_longest]
+
 #find the # of functions with no arguments (for question 2b)
-  
+print(min(fun_len_vector))  #check lowest value of fun_len_vector
+no_args <- which(fun_len_vector == 0) #get positions of the 0 argument functions
+only_no_args <- fun_len_vector[no_args] #make a vector of the elements (functions) with no arguments
+length(only_no_args) #see how many functions have no arguments
+
 #find the primitive functions (for question 2c)
+
+prim_functions <- is.primitive 
 
 ```
 Use it to answer the following questions:
 
 2a. Which base function has the most arguments?
+  scan, it has 22 arguments
   
 2b. How many base functions have no arguments? What’s special about those functions?
+  226 base functions have no arguments.
+  The special thing is that they are primitive.
 
 2c. How could you adapt the code to find all primitive functions?
-
+  I did this above (only_no_args) vector
+  
 3. What are the three important components of a function?
   Body (code inside the function), Formals (list of arguments which controls how to call the function), Environment (map of location of variables in function)
   
@@ -132,15 +180,20 @@ Use it to answer the following questions:
 c <- 10
 c(c = c)
 ```
-   The code returns 10
-   first c: 
-   second c:
-   third c:
+   The code returns 10.
+   first c: this is a function c()
+   second c: new label c
+   third c: assign the value for c (defined above) to the parameter/label c
    
 2. What are the four principles that govern how R looks for values?
 
 3. What does the following function return? Make a prediction before running the code yourself.
+  inner function squares
+  second to inner function adds 1 
+  third function multiplies that value by 2
+  The function returns 202.
 
+```{r}
 f <- function(x) {
   f <- function(x) {
     f <- function(x) {
@@ -151,11 +204,24 @@ f <- function(x) {
   f(x) * 2
 }
 f(10)
+```
 
 # Function Arguments
 1. Clarify the following list of odd function calls:
-
+  x:
+    is an object that samples with replacement 
+    getting a vector of 1 through 10 plus NA
+    output 20 values
+  y:
+    create a uniform distribution with a minimum of 0 and a max of 1
+    with 20 values
+  cor:
+    k is referring to kendall for the method of correlation argument
+    p is referring to pairwise for the use argument
+  
+  
 ```{r}
+?cor
 x <- sample(replace = TRUE, 20, x = c(1:10, NA))
 y <- runif(min = 0, max = 1, 20)
 cor(m = "k", y = y, u = "p", x = x)
@@ -163,8 +229,9 @@ cor(m = "k", y = y, u = "p", x = x)
 
 2. What does this function return? Why? Which principle does it illustrate?
   This function returns 3.
-  The reason that it returns 3 is ...
-  The principle which it illustrates is...
+  The reason that it returns 3 is we assigned y a value of 1 and then are adding x, which = 2. 
+  If we did not have the y <-1, it would have defaulted to 0.
+  The principle which it illustrates is you can assign a value to y locally.
 ```{r}
 f1 <- function(x = {y <- 1; 2}, y = 0) {
   x + y
@@ -173,25 +240,72 @@ f1()
 ```
 
 3. What does this function return? Why? Which principle does it illustrate?
-
+  This function returns 100 because x is looking locally first (within the function's local environment).
+  We have assigned z a value of 100
+  We have told the function x = z
+  So, when we ask for x, it gives us 100.
+  It illustrates the principle of name masking.
+```{r}
 f2 <- function(x = z) {
   z <- 100
   x
 }
 f2()
-
+```
 # Special calls
 
 1. Create a list of all the replacement functions found in the base package. Which ones are primitive functions?
-
+  Skipping for now.
+  
 2. What are valid names for user-created infix functions?
 
 3. Create an infix xor() operator.
+```{r}
+`%xor%` <- x | y
+x <- 2
+y <- 5
+
+%xor% c(x,y)
+```   
 
 4. Create infix versions of the set functions intersect(), union(), and setdiff().
+```{r}
+#union will output everything from both but give you the unique elements
+`%unionEmily%` <- function(x,y){
+  return(unique(c(x,y)))}
 
+x <- c(1,2,3)
+y <- c(3,4,5)
+x %unionEmily% y
+
+#intersect will output only the things they have in common 
+
+#setdiff says "take everything in the first thing and get rid of the common things from the second thing"
+```
 5. Create a replacement function that modifies a random location in a vector.
+```{r}
 
+#WITHIN THE FUNCTION
+#create a vector LOCATION that is all possible locations within the length of the vector x
+#constrain the position to be within the vector, randomly choose a position within the vector
+#put the value in the random position in the vector x
+#return x
+`EmilyFunction<-` = function(x, value){
+  location <- 1:length(x)
+  random_position <- sample(location, 1)
+  x[random_position] = value
+  return(x)}
+
+
+#Testing the function
+  #defining a vector
+  x <- 1:100
+  #calling my function with the value of 150 in a random position in x
+  EmilyFunction(x) = 150
+  
+  #looking at x
+  x
+```
 #Return Values
 
 1. How does the chdir parameter of source() compare to in_dir()? Why might you prefer one approach to the other?
@@ -199,9 +313,11 @@ f2()
 2. What function undoes the action of library()? How do you save and restore the values of options() and par()?
 
 3. Write a function that opens a graphics device, runs the supplied code, and closes the graphics device (always, regardless of whether or not the plotting code worked).
+  We have not covered graphics yet.
 
 4. We can use on.exit() to implement a simple version of capture.output().
-
+  We have not covered this yet.
+  
 capture.output2 <- function(code) {
   temp <- tempfile()
   on.exit(file.remove(temp), add = TRUE)
