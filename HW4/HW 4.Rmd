@@ -276,8 +276,19 @@ f2()
 # Special calls
 
 1. Create a list of all the replacement functions found in the base package. Which ones are primitive functions?
-  Skipping for now.
-  
+
+``` {r}  
+  #from earlier in the chapter - makes a list of all the fun in base package
+  objs <- mget(ls("package:base"), inherits = TRUE)
+  funs <- Filter(is.function, objs)
+  #get the list of the replacement functions:
+  replace_func <- funs[grep("<-$", names(funs))]
+  #and the primitive functions:
+  prim_func <- Filter(is.primitive, replace_func)
+  # get the names of the primitive functions for ease of seeing which ones are primitive
+  names(prim_func)
+```
+
 2. What are valid names for user-created infix functions?
   Valid names for user-created in-fix functions must start and end with %. They can contain any sequence of characters besides %.
 
