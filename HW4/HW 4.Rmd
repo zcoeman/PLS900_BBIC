@@ -20,39 +20,55 @@ calculating the summary statistics into functions.
 
 ```{r}
 
-#Setting a dataframe up
-set.seed(6886)
-df <- data.frame(
-replicate(
-6,
-sample(c(1:10, -99, -88, -77, -66, NA), 12, rep=TRUE)
-))
-df
+#create function to produce summary stats (from class)
+fnx = function(x){
+  numberNA = sum(is.na(x))
+  x = x[!is.na(x)]
+  n = length(x)
+  out = c(n = n, numberNA = numberNA, mean = mean(x), median = median(x), 
+          max = max(x), min = min(x), stdev = sd(x))
+  return(out)
+}
 
-#Testing apply
+#create functions from the apply, sapply, lapply and for loop statements made in class
+polity_apply <- function(pdata){
+  df <- apply(pdata, 2, fnx)
+  return(df)
+}
 
-#Testing lapply
+polity_lapply <- function(pdata){
+  df <- do.call(cbind, lapply(pdata, fnx))
+  return(df) 
+}
 
-lapplyTest <- function(df){
-df[] <- lapply(df, fix_missing)
-return(df) }
 
-#Testing sapply
+polity_sapply <- function(pdata){
+  df <- sapply(pdata, fnx)
+  return(df)
+}
 
-#Testing For loop
+polity_for <- function(pdata){
+  df <- data.frame(democ = rep(NA,7),autoc = rep(NA,7), polity2 = rep(NA,7), xconst = rep(NA,7))
+  for(i in pdata){
+    df[,i] <- fnx(polity[,i])
+  }
+  return(df)
+}
 
-loopTest <- function(df){
-for(i in 1:ncol(df)){
-df[,i] <- fix_missing(df[,i]) } }
-
-#Benchmark to compare them
 
 library(rbenchmark)
+#set the columns of interest from the polity data, probably a better way to do this
+df <- polity[, c("democ", "autoc", "polity2", "xconst")]
+vect <- c('democ','autoc','polity2','xconst')
+
+#run a benchmark test on each of the functions
 benchmark(
-lapplyTest(df),
-loopTest(df),
-replications=5,
-columns=c('test','elapsed','replications')
+  polity_apply(df),
+  polity_lapply(df),
+  polity_sapply(df),
+  polity_for(vect),
+  replications=100,
+  columns=c('test','elapsed','replications')
 )
 ```
 
