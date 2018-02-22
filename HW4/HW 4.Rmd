@@ -19,6 +19,7 @@ lapply, and a for loop. This will require you to turn your code for
 calculating the summary statistics into functions.
 
 ```{r}
+load("/Users/zacharycoeman/Desktop/900/polity_dataframe.rda")
 
 #create function to produce summary stats (from class)
 fnx = function(x){
@@ -78,7 +79,7 @@ Use tapply to calculate the mean, median, and stdev of polity2 and
 xconst for every year in the polity dataframe object. 
 
 ```{r}
-load("/Users/nickbichay/Desktop/ /aPLS 900/Week 4/polity_dataframe.rda")
+load("/Users/zacharycoeman/Desktop/900/polity_dataframe.rda")
 
 #### With tapply
 
@@ -100,11 +101,6 @@ library(dplyr)
 
 
 ## Functions chapter Problems
-
-```{r}
-install.packages("pryr")
-```
-
 # Function Components
 1.What function allows you to tell if an object is a function?
 What function allows you to tell if a function is a primitive function?
@@ -294,11 +290,27 @@ f2()
 
 3. Create an infix xor() operator.
 ```{r}
-`%xor%` <- x | y
-x <- 2
-y <- 5
+#XOR means that A or B must be true, but not both.
+#demonstrating the usage of xor
+xor(FALSE, TRUE)
+  #returns True
+xor(FALSE, FALSE)
+  #returns False
+xor(TRUE, TRUE)
+  #returns False
 
-%xor% c(x,y)
+#creating new infix function
+`%xor%` <- function(x, y){
+  x!=y
+}
+
+#demonstrating that infix function yields same results as regular function
+`%xor%`(FALSE,TRUE)
+  #returns TRUE
+`%xor%`(FALSE,FALSE)
+  #returns False
+`%xor%`(T,T)
+  #returns False
 ```   
 
 4. Create infix versions of the set functions intersect(), union(), and setdiff().
@@ -394,7 +406,7 @@ capture.output2 <- function(code) {
   readLines(temp)
 }
 capture.output2(cat("a", "b", "c", sep = "\n"))
-# [1] "a" "b" "c"
+[1] "a" "b" "c"
 Compare capture.output() to capture.output2(). How do the functions differ? What features have I removed to make the key ideas easier to see? How have I rewritten the key ideas to be easier to understand?
 
 ## Functional Programming chapter Problems
@@ -510,7 +522,7 @@ B: f(x$z)
   "miline" = milne )
   lapply(list_functions, function(x) composite(sin, 0, pi, n = 10, rule = x))
 
-  This doesn't work, but is this what was being asked?
+  This doesn't work, but is this closer to what was being asked?
   ruleslist <- list(
     boole = list(coef = c(7, 32, 12, 32, 7)),
     milne = list(coef = c(2, -1, 2), open = TRUE)
