@@ -186,6 +186,11 @@ c(c = c)
    third c: assign the value for c (defined above) to the parameter/label c
    
 2. What are the four principles that govern how R looks for values?
+  The four principles are: 
+  (1) name masking
+  (2) functions vs. variables
+  (3) a fresh start
+  (4) dynamic lookup
 
 3. What does the following function return? Make a prediction before running the code yourself.
   inner function squares
@@ -258,6 +263,7 @@ f2()
   Skipping for now.
   
 2. What are valid names for user-created infix functions?
+  Valid names for user-created in-fix functions must start and end with %. They can contain any sequence of characters besides %.
 
 3. Create an infix xor() operator.
 ```{r}
@@ -270,17 +276,44 @@ y <- 5
 
 4. Create infix versions of the set functions intersect(), union(), and setdiff().
 ```{r}
-#union will output everything from both but give you the unique elements
+#union will output everything from both but give you the unique elements only
 `%unionEmily%` <- function(x,y){
   return(unique(c(x,y)))}
 
 x <- c(1,2,3)
 y <- c(3,4,5)
 x %unionEmily% y
+  #this outputs 1 2 3 4 5, it worked!
 
 #intersect will output only the things they have in common 
+`%intersectEmily%` <- function(x,y){
+  vector1 <- c(unique(x),unique(y))
+  comm <- vector1[duplicated(vector1)]
+  return(comm)}
+
+x <- c(1,2,3)
+y <- c(3,4,5)
+?unduplicated
+x %intersectEmily% y
+  #this outputs 3, it worked!
 
 #setdiff says "take everything in the first thing and get rid of the common things from the second thing"
+
+`%setdiffEmily%` <- function(x,y){
+  vector1 <- c(unique(x),unique(y))
+  comm <- vector1[duplicated(vector1)]
+  final <- x[! x %in% comm]
+  return(final)}
+
+x <- c(1,2,3)
+y <- c(3,4,5)
+
+x %setdiffEmily% y
+
+  #this yields 1 2, it worked!
+
+setdiff(x,y)
+
 ```
 5. Create a replacement function that modifies a random location in a vector.
 ```{r}
