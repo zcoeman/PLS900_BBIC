@@ -20,39 +20,55 @@ calculating the summary statistics into functions.
 
 ```{r}
 
-#Setting a dataframe up
-set.seed(6886)
-df <- data.frame(
-replicate(
-6,
-sample(c(1:10, -99, -88, -77, -66, NA), 12, rep=TRUE)
-))
-df
+#create function to produce summary stats (from class)
+fnx = function(x){
+  numberNA = sum(is.na(x))
+  x = x[!is.na(x)]
+  n = length(x)
+  out = c(n = n, numberNA = numberNA, mean = mean(x), median = median(x), 
+          max = max(x), min = min(x), stdev = sd(x))
+  return(out)
+}
 
-#Testing apply
+#create functions from the apply, sapply, lapply and for loop statements made in class
+polity_apply <- function(pdata){
+  df <- apply(pdata, 2, fnx)
+  return(df)
+}
 
-#Testing lapply
+polity_lapply <- function(pdata){
+  df <- do.call(cbind, lapply(pdata, fnx))
+  return(df) 
+}
 
-lapplyTest <- function(df){
-df[] <- lapply(df, fix_missing)
-return(df) }
 
-#Testing sapply
+polity_sapply <- function(pdata){
+  df <- sapply(pdata, fnx)
+  return(df)
+}
 
-#Testing For loop
+polity_for <- function(pdata){
+  df <- data.frame(democ = rep(NA,7),autoc = rep(NA,7), polity2 = rep(NA,7), xconst = rep(NA,7))
+  for(i in pdata){
+    df[,i] <- fnx(polity[,i])
+  }
+  return(df)
+}
 
-loopTest <- function(df){
-for(i in 1:ncol(df)){
-df[,i] <- fix_missing(df[,i]) } }
-
-#Benchmark to compare them
 
 library(rbenchmark)
+#set the columns of interest from the polity data, probably a better way to do this
+df <- polity[, c("democ", "autoc", "polity2", "xconst")]
+vect <- c('democ','autoc','polity2','xconst')
+
+#run a benchmark test on each of the functions
 benchmark(
-lapplyTest(df),
-loopTest(df),
-replications=5,
-columns=c('test','elapsed','replications')
+  polity_apply(df),
+  polity_lapply(df),
+  polity_sapply(df),
+  polity_for(vect),
+  replications=100,
+  columns=c('test','elapsed','replications')
 )
 ```
 
@@ -342,8 +358,13 @@ setdiff(x,y)
 #Return Values
 
 1. How does the chdir parameter of source() compare to in_dir()? Why might you prefer one approach to the other?
+  chdir will change the working directory temporarily, useful when you want to save a file in that other location.
+  in_dir is a now defunct function, I assume it didn't change the directory, in contrast to chdir
 
 2. What function undoes the action of library()? How do you save and restore the values of options() and par()?
+  detach() undoes the action of library()
+  you can save options and par by making them an object like anything else in r
+    oldpar <- par()
 
 3. Write a function that opens a graphics device, runs the supplied code, and closes the graphics device (always, regardless of whether or not the plotting code worked).
   We have not covered graphics yet.
@@ -370,22 +391,29 @@ Compare capture.output() to capture.output2(). How do the functions differ? What
 # Anonymous Functions
 
 1. Given a function, like "mean", match.fun() lets you find a function. Given a function, can you find its name? Why doesn’t that make sense in R?
+  Functions in R can be anonymous and have no name. 
+
 
 2. Use lapply() and an anonymous function to find the coefficient of variation (the standard deviation divided by the mean) for all columns in the mtcars dataset.
+  lapply(mtcars, function(x) sd(x)/mean(x))
+
 
 3. Use integrate() and an anonymous function to find the area under the curve for the following functions. Use Wolfram Alpha to check your answers.
 
 y = x ^ 2 - x, x in [0, 10]
+  integrate(function(x) x^2-x, 0, 10)
 y = sin(x) + cos(x), x in [-π, π]
-y = exp(x) / x, x in [10, 20]
+  integrate(function(x) sin(x) + cos(x), -pi, pi)
+y = exp(x) / x, x in [10, 20] 
+  integrate(function(x) exp(x)/x, 10, 20)
 
 4. A good rule of thumb is that an anonymous function should fit on one line and shouldn’t need to use {}. Review your code. Where could you have used an anonymous function instead of a named function? Where should you have used a named function instead of an anonymous function?
-
-
+  Not sure, none of the above use {}. Maybe I did them wrong?
 
 # Closures
 
 1. Why are functions created by other functions called closures?
+  "they enclose the environment of the parent function and can access all its variables"
 
 2. What does the following statistical function do? What would be a better name for it? (The existing name is a bit of a hint.)
 
@@ -397,9 +425,13 @@ bc <- function(lambda) {
   }
 }
 
-3. What does approxfun() do? What does it return?
+  It's a function that returns the log of x if lambda is 0, otherwise it returns (x ^ lambda - 1) / lambda. Google says this is a box cox transformation, so a better name would be box_cox
 
+3. What does approxfun() do? What does it return?
+  It approximates the amount of fun the user is having as they work in R.   But actually, it "returns a function performing (linear or constant) interpolation of the given data points. For a given set of x values, this function will return the corresponding interpolated values."
+  
 4. What does ecdf() do? What does it return?
+  Computes an empirical cumulative distribution function
 
 5. Create a function that creates functions that compute the ith central moment of a numeric vector. You can test it by running the following code:
 
@@ -410,15 +442,38 @@ x <- runif(100)
 stopifnot(all.equal(m1(x), 0))
 stopifnot(all.equal(m2(x), var(x) * 99 / 100))
 
+  moment <- function(i) {
+    function(x) sum((x-mean(x))^i)/length(x)
+  }
+
 6. Create a function pick() that takes an index, i, as an argument and returns a function with an argument x that subsets x with i.
 
 lapply(mtcars, pick(5))
-# should do the same as this
+should do the same as this
 lapply(mtcars, function(x) x[[5]])
+
+  pick <- function(i){
+  function(x) x[[i]]
+  }
 
 # Lists of Functions
 
 1. Implement a summary function that works like base::summary(), but uses a list of functions. Modify the function so it returns a closure, making it possible to use it as a function factory.
+
+  function_summary <- function(){
+    functions_list <- list(
+    "Mean" = mean,
+    "Median" = median,
+    "Min" = min,
+    "Max" = max,
+    "1st Qu." = function(x) quantile(x, probs = 0.25),
+    "3rd Qu" =  function(x) quantile(x, probs = 0.75)
+    )
+    function(x){
+    lapply(x, function(x))
+    }
+  }
+
 
 2. Which of the following commands is equivalent to with(x, f(z))?
 
@@ -428,11 +483,34 @@ x$f(z).
 f(z).
 It depends.
 
+B: f(x$z)
+
 # Case Study: Numerical Integration
 
 1. Instead of creating individual functions (e.g., midpoint(), trapezoid(), simpson(), etc.), we could store them in a list. If we did that, how would that change the code? Can you create the list of functions from a list of coefficients for the Newton-Cotes formulae?
+  
+  I am not sure if I fully understand what is supposed to be done here. 
+  
+  list_functions <- list(
+  "midpoint" = midpoint,
+  "trapezoid" = trapezoid,
+  "simpson" = simpson,
+  "boole" = boole,
+  "miline" = milne )
+  lapply(list_functions, function(x) composite(sin, 0, pi, n = 10, rule = x))
+
+  This doesn't work, but is this what was being asked?
+  ruleslist <- list(
+    boole = list(coef = c(7, 32, 12, 32, 7)),
+    milne = list(coef = c(2, -1, 2), open = TRUE)
+  )
+  lapply(ruleslist, function(x) do.call(newton_cotes, x))
+
 
 2. The trade-off between integration rules is that more complex rules are slower to compute, but need fewer pieces. For sin() in the range [0, π], determine the number of pieces needed so that each rule will be equally accurate. Illustrate your results with a graph. How do they change for different functions? sin(1 / x^2) is particularly challenging.
+  
+  Not sure how to do this one either. 
+  
 
 
 
