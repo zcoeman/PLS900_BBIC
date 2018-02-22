@@ -325,8 +325,13 @@ x %unionEmily% y
 #Return Values
 
 1. How does the chdir parameter of source() compare to in_dir()? Why might you prefer one approach to the other?
+  chdir will change the working directory temporarily, useful when you want to save a file in that other location.
+  in_dir is a now defunct function, I assume it didn't change the directory, in contrast to chdir
 
 2. What function undoes the action of library()? How do you save and restore the values of options() and par()?
+  detach() undoes the action of library()
+  you can save options and par by making them an object like anything else in r
+    oldpar <- par()
 
 3. Write a function that opens a graphics device, runs the supplied code, and closes the graphics device (always, regardless of whether or not the plotting code worked).
   We have not covered graphics yet.
