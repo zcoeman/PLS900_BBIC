@@ -28,9 +28,10 @@ approval_topline <- read.csv( file='/Users/zacharycoeman/Desktop/900/forHW/appro
                                stringsAsFactors=FALSE )
 ```
 
-Second, data manipulation
-Subset the data by all poll to make it easier to deal with.
-Converst the dates in the data from characters to dates so they can be used in the graphs
+Second, data manipulation:
+
+Subset the data by all polls to make it easier to deal with.
+Convert the dates in the data from characters to dates so they can be used in the graphs
 ``` {r}
 allpolls <- approval_topline[approval_topline$subgroup == "All polls",]
 allpolls$date <- as.Date(allpolls$modeldate, "%m/%d/%Y")
