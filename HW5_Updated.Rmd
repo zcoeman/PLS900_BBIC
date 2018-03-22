@@ -1,30 +1,145 @@
 ---
-title: "Homework 5"
+title: "HW 5_updated"
 author: 'BBC: Bichay, Bovee, Coeman'
-date: "March 22, 2018"
+date: "3/21/2018"
 output: 
   pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-# Graph 1
+# Graph 1: What do People in Other Countries think of Trump's Policies?
+Load in the data and the tidyverse, and countrycode package, and the car package
+
+```{r}
+library(tidyverse)
+library(countrycode)
+library(car)
 
 
+climate <- read.csv("/Users/nickbichay/Desktop/ /aPLS 900/Week 7/trump-world-trust/TRUMPWORLD-issue-1.csv", header = TRUE, stringsAsFactors = FALSE)
 
+wall <- read.csv("/Users/nickbichay/Desktop/ /aPLS 900/Week 7/trump-world-trust/TRUMPWORLD-issue-2.csv", header = TRUE, stringsAsFactors = FALSE)
+
+Iran <- read.csv("/Users/nickbichay/Desktop/ /aPLS 900/Week 7/trump-world-trust/TRUMPWORLD-issue-3.csv", header = TRUE, stringsAsFactors = FALSE)
+
+trade <- read.csv("/Users/nickbichay/Desktop/ /aPLS 900/Week 7/trump-world-trust/TRUMPWORLD-issue-4.csv", header = TRUE, stringsAsFactors = FALSE)
+
+travel <- read.csv("/Users/nickbichay/Desktop/ /aPLS 900/Week 7/trump-world-trust/TRUMPWORLD-issue-5.csv", header = TRUE, stringsAsFactors = FALSE)
+
+```
+## Part 2: Data Manipulation
+
+First, merge.
+```{r}
+
+##Merge
+  #first add a unique variable to each dataset identifying the dataset
+climate$dataset = c("climate")
+wall$dataset = c("wall")
+Iran$dataset = c("Iran")
+trade$dataset = c("trade")
+travel$dataset = c("travel")
+
+#then merge based on the Dataset variable
+finaldata <-rbind(climate, Iran, wall, trade, travel)
+```
+
+Create a region variable using the country code package. Then, tweak the variable 
+```{r}
+#Use the country code package to change the region variable into REGIONS
+finaldata$region <- countrycode(finaldata$country, "country.name", "region")
+
+#Create a region Key to convert the old regions 
+regionKey = data.frame(dirty=unique(finaldata$region), stringsAsFactors = FALSE)
+regionKey$clean = NA
+regionKey$clean[grepl('Europe',regionKey$dirty)] = 'Europe\nand Russia'
+regionKey$clean[grepl('Africa',regionKey$dirty)] = 'Middle East and Africa'
+regionKey$clean[grepl('Asia',regionKey$dirty)] = 'Asia'
+regionKey$clean[regionKey$dirty %in% c('South America', 'Central America')] = 'South America and Mexico'
+
+##Merge new clean region variable, check to make sure that it worked
+finaldata$regionClean = regionKey$clean[match(finaldata$region, regionKey$dirty)] 
+finaldata$regionClean[finaldata$country %in% c('Israel','Jordan','Lebanon')] = 'Middle East and Africa'
+
+#get rid of Canada, Australia/New Zealand because they are not in final viz
+finaldata = na.omit(finaldata)
+```
+
+
+Building visualization
+```{r}
+#First calculate the mean for net approval
+finaldata$mean_approval = mean(finaldata$net_approval)
+
+#acknowledge the factor level order for the regionClean variable in the final viz
+finaldata$regionClean = factor(finaldata$regionClean, levels=rev(unique(finaldata$regionClean)[c(1,3,4,2)]))
+
+#Facet Label Prep
+    ##get ready to change labels on facets by making a list of eventual facet names
+    facet_names <- list(
+      'climate'="Withdraw from\n global climate change\n agreements",
+      'Iran'="Build a wall between\n the U.S. and Mexico",
+      'trade'="Withdraw from\n the Iran nuclear weapons\n agreement",
+      'travel'="Withdraw from major trade\n agreements",
+      'wall' = "Restrict travel from\n some majority-Muslim\n countries"
+    )
+    #Facet labeler function
+    facet_labeler <- function(variable,value){
+      return(facet_names[value])
+    }
+
+#make the visualization
+finalViz <- ggplot(finaldata, aes(x = net_approval, y = regionClean, color=regionClean)) +
+  geom_point(alpha=.6, size=2) +
+  #change the point colors to match the viz online
+  scale_color_manual(values=c("tomato", "forestgreen", "hotpink1", "dodgerblue1"))+
+  #add a line for the mean net approval
+  geom_vline(xintercept = mean(finaldata$net_approval), linetype="dashed", color = "gray") +
+  geom_vline(xintercept=0, color='gray', linetype='solid') +
+  #Cleaning up the theme: no gray background
+  theme_bw() + 
+  scale_x_continuous('', limits=c(-100,100), breaks=c(-100, 100), labels=c('-100', '+100')) +
+  guides(fill=FALSE) +
+  labs(
+    y='',
+    title='What do people in other countries\n think of Trump policy proposals?', size = 5
+  ) +
+  #move position of title
+  theme(plot.title = element_text(hjust=0.5)) +
+  #no axis ticks, no borders, no legend
+  theme(
+    axis.ticks=element_blank(), 
+    panel.border=element_blank(),
+    legend.position="none",
+    #creating a horizontal line for each region, eliminating all other grid lines
+    panel.grid.major.y = element_line(color="gray", size = .2),
+    panel.grid.minor.y = element_blank(),
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor.x = element_blank()
+  )+
+      facet_wrap(~dataset, nrow=1, labeller=facet_labeler) + 
+  theme(strip.text = element_text(face="bold", size=5.5),
+        strip.background = element_blank())
+
+finalViz
+
+
+```
 
 # Graph 2 Trump Approval Rating
 
 First, load in the data and library ggplot2
-``` {r}
+```{r}
 library(ggplot2)
 
-approval_polllist <- read.csv( file='/Users/zacharycoeman/Desktop/900/forHW/approval_polllist.csv', 
+approval_polllist <- read.csv( file='/Users/nickbichay/Desktop/approval_polllist.csv', 
                      stringsAsFactors=FALSE )
 
-approval_topline <- read.csv( file='/Users/zacharycoeman/Desktop/900/forHW/approval_topline.csv', 
+approval_topline <- read.csv( file='/Users/nickbichay/Desktop/approval_topline.csv', 
                                stringsAsFactors=FALSE )
 ```
 
@@ -32,7 +147,7 @@ Second, data manipulation:
 
 Subset the data by all polls to make it easier to deal with.
 Convert the dates in the data from characters to dates so they can be used in the graphs
-``` {r}
+```{r}
 allpolls <- approval_topline[approval_topline$subgroup == "All polls",]
 allpolls$date <- as.Date(allpolls$modeldate, "%m/%d/%Y")
 approval_polllist$date <- as.Date(approval_polllist$enddate, "%m/%d/%Y")
@@ -41,7 +156,9 @@ approval_polllist$date <- as.Date(approval_polllist$enddate, "%m/%d/%Y")
 
 Finally, create the graph 
 
-``` {r}
+Finally, create the graph 
+
+```{r}
 approval <- ggplot(allpolls, aes(x = date)) +
   #approval line
   geom_line(aes(y = approve_estimate, group = 1), color = "green3", size = 1) +
@@ -79,7 +196,6 @@ approval <- ggplot(allpolls, aes(x = date)) +
   )
 
 approval
-
 ```
 
 # Substantive Effects Simulations
@@ -214,6 +330,3 @@ ggplot(simAnalysis_lji, aes(x=x1, y=yPred)) +
     geom_line() +
     geom_ribbon(aes(ymin=q95lo, ymax=q95hi), alpha=.6)
 ```
-
-
-
